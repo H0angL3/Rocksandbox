@@ -1,50 +1,49 @@
 # ROCK SANDBOX
-**ROCK SANDBOX** ��?c x�y d?ng d?a tr�n QEMU d�ng cho m?c ��ch ph�n t�ch �?ng.
-## Ch?c n�ng:
-* Th?c thi executable file tr�n qemu-system v?i ki?n tr�c t��ng ?ng. (hi?n t?i m?i �ang h? tr? MIPS).
-* Thu th?p systemcall th�ng qua c�ng c? strace.
-* Thu th?p h�nh vi m?ng s? d?ng TCPDump
+**ROCK SANDBOX** được xây dựng dựa trên QEMU với mục đích phục vụ phân tích động mã độc IOT
+## Chức năng:
+* Thực thi executable file trên qemu-system với kiến trúc tương ứng. (hiện tại chỉ hỗ trợ MIPS).
+* Thu thập systemcall thông qua công cụ strace.
+* Thu thập hành vi mạng bằng TCPDump
 ## INSTALL:
-### Chu?n b?:
-* M�y ?o Ubuntu desktop 18.04:
+### Chuẩn bị:
+* Máy ảo Ubuntu desktop 18.04:
   * Network: 2 card m?ng
-    * 1 card m?ng NAT (ens33)
-    * 1 card m?ng host only (ens38)
-* T?i v? m? ngu?n
-* T?i v? t?p qemu image
-### C�i �?t qemu:
+    * 1 card mạng NAT (ens33)
+    * 1 card mạng host only (ens38)
+* Tải về qemu image
+### Cài đặt QEMU
 ```
 sudo apt-get update
 sudo apt-get install qemu
 ```
-### C�i �?t inetsim: 
+### Cài đặt inetsim: 
 ```
 sudo apt-get install inetsim
 ```
-C?u h?nh inetsim cho card m?ng host only:
+Cấu hình inetsim cho card mạng host only:
 ```
 sudo gedit /etc/inetsim/inetsim.conf
-uncomment v� s?a l?i (default):
+uncomment và sửa lại (default):
 service_bind_address	192.168.1.20 
 dns_default_ip		192.168.1.20
 ```
 
-**T?t apache2(n?u �ang ch?y):**
+**Tắt apache2 nếu đang chạy:**
 ```
 sudo service apache2 stop
 ```
-### C�i �?t bridge network:
+### Cài đặt bridge network:
 ```
 sudo apt-get install uml-utilities bridge-utils
 groupadd -r tuntap
 usermod -a -G tuntap ubuntu (username)
 sudo service NetworkManager stop
 ```
-**S?a interface**
+**Sửa interface**
 ```
 sudo gedit /etc/network/interfaces
 ```
-S?a l?i nh� sau: 
+Sửa lại như sau: 
 ```
 # interfaces(5) file used by ifup(8) and ifdown(8)
 auto lo
@@ -63,12 +62,12 @@ Restart network
 sudo ifdown -a
 sudo ifup -a
 ```
-Ki?m tra v?i l?nh `ifconfig`, n?u xu?t hi?n interface br0 l� ok.
-### C?u h?nh switch ?o cho QEMU:
+Kiểm tra với lệnh `ifconfig`, nếu xuất hiện br0 thì OK.
+### Cấu hình switch ảo cho QEMU:
 ```
 sudo gedit /etc/qemu-ifup
 ```
-Th�m d?ng l?nh switch = br0
+Thêm dòng lệnh switch = br0 như sau:
 ```
 ...
 switch=$(ip route ls | \
@@ -79,20 +78,21 @@ switch=$(ip route ls | \
 switch=br0 
 ...
 ```
-### C�i �?t th� vi?n cho Python3
+### Cài thư viện cần thiết cho Python3
 ```
 pip3 install paramiko
+pip3 install scp
 ```
-## S? d?ng
-1. Kh?i �?ng qemu v?i l?nh
+## Sử dụng
+1. Khởi động qemu với lệnh
 ```
 ./run_qemu.sh
 ```
-2. Ph�n t�ch sample
+2. Phân tích sample
 ```
 python3 ./analysis.py -s [sample] -d [destFolder] -t [timeToWait]
 ```
-3. Sau khi ph�n t�ch thu ��?c 2 t?p : *strace.txt* v� *dump.pcap* t?i th� m?c [destFolder]
+3. Sau khi phân tích thu được 2 tệp : *strace.txt* và *dump.pcap* tại thư mục [destFolder]
 
 
 
