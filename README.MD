@@ -11,6 +11,8 @@
     * 1 card mạng NAT (ens33)
     * 1 card mạng host only (ens38)
 * Tải về qemu image
+https://drive.google.com/drive/folders/17Wofxpv8MbEmXWwpEJ6NZ-CJbyatkJg5?usp=sharing
+giải nén và copy vào source code.
 ### Cài đặt QEMU
 ```
 sudo apt-get update
